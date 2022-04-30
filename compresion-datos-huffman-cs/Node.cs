@@ -92,7 +92,7 @@ namespace compresion_datos_huffman_cs
         public string text;
         public int index;
         //public List<bool> huffman;
-        // byte[] huffByte;
+        byte[] huffByte;
         public HuffmanTree()
         {
             nodeList = new List<Node>();
@@ -117,7 +117,6 @@ namespace compresion_datos_huffman_cs
             setCodeToTheTree("", tree);
             buildHuffCode(stream, tree);
             //binaryToBool();
-            //binaryToByte();
         }
         public void getTreeFromList()
         {
@@ -146,7 +145,10 @@ namespace compresion_datos_huffman_cs
         }
         public void saveBinary(string fileName)
         {
-            nodeList.Clear();
+            binaryToByte();
+            nodeList = null;
+            text = null;
+            huffByte = null;
             //huffmanCode = "";
             using (Stream stream = File.Open(fileName, FileMode.Create))
             {
@@ -164,7 +166,7 @@ namespace compresion_datos_huffman_cs
                 tree = huff.tree;
                 huffmanCode = huff.huffmanCode;
                 //huffByte = huff.huffByte;
-                //ByteToBinary();
+                ByteToBinary();
                 stream.Close();
             }
         }
@@ -222,6 +224,7 @@ namespace compresion_datos_huffman_cs
                 buildText(tree, huffmanCode);
             }
         }
+        // Pruebas compresion de codigo
         //public void filterByCode(string test, string cod, Node node)
         //{
         //    if (node == null)
@@ -235,18 +238,42 @@ namespace compresion_datos_huffman_cs
         //    return false;
         //    //return "error";
         //}
-        //public void binaryToByte()
-        //{
-        //    //huffmanCode += new string('0', huffmanCode.Length % 64);
-        //    //long[] binary = new long[huffmanCode.Length / 64].Select((x, y) => Convert.ToInt64(huffmanCode.Substring(y * 64, 64), 2)).ToArray();
-        //    //huffByte = new byte[binary.Length * sizeof(long)];
-        //    //Buffer.BlockCopy(binary, 0, huffByte, 0, huffByte.Length);
-        //    huffByte= Convert.FromBase64String(huffmanCode);
-        //}
-        //public void ByteToBinary()
-        //{
-        //    huffmanCode = Convert.ToBase64String(huffByte);
-        //}
+        public void binaryToByte()
+        {
+            //huffmanCode += new string('0', huffmanCode.Length % 64);
+            //long[] binary = new long[huffmanCode.Length / 64].Select((x, y) => Convert.ToInt64(huffmanCode.Substring(y * 64, 64), 2)).ToArray();
+            //huffByte = new byte[binary.Length * sizeof(long)];
+            //Buffer.BlockCopy(binary, 0, huffByte, 0, huffByte.Length);
+            //huffByte = Convert.FromBase64String(huffmanCode);
+            using (var uncompressedStream = new MemoryStream(Encoding.UTF8.GetBytes(huffmanCode)))
+            {
+                using (var compressedStream = new MemoryStream())
+                {
+                    using (var compressorStream = new System.IO.Compression.DeflateStream(compressedStream, System.IO.Compression.CompressionLevel.Optimal, true))
+                    {
+                        uncompressedStream.CopyTo(compressorStream);
+                    }
+                    huffByte = compressedStream.ToArray();
+                }
+            }
+            huffmanCode = Convert.ToBase64String(huffByte);
+        }
+        public void ByteToBinary()
+        {
+            //huffmanCode = Convert.ToBase64String(huffByte);
+            var compressedStream = new MemoryStream(Convert.FromBase64String(huffmanCode));
+
+            using (var decompressorStream = new System.IO.Compression.DeflateStream(compressedStream, System.IO.Compression.CompressionMode.Decompress))
+            {
+                using (var decompressedStream = new MemoryStream())
+                {
+                    decompressorStream.CopyTo(decompressedStream);
+
+                    huffByte = decompressedStream.ToArray();
+                }
+            }
+            huffmanCode = Encoding.UTF8.GetString(huffByte);
+        }
         //public void binaryToBool()
         //{
         //    foreach(char c in huffmanCode)
