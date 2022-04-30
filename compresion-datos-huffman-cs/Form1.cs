@@ -104,7 +104,7 @@ namespace compresion_datos_huffman_cs
 						sfd.Filter = "huff files (*.huff)|*.huff";
 					if (inputFileName.EndsWith(".huff") || inputFileName.EndsWith(".HUFF"))
 						sfd.Filter = "txt files (*.txt)|*.txt";
-					sfd.FileName = "huffman";
+					sfd.FileName = "";
 					sfd.Title = "Guardar Archivo";
 					if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 					{
