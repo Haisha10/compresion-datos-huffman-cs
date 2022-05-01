@@ -37,7 +37,7 @@ namespace compresion_datos_huffman_cs
 						{
 							tbxPath.Text = ofd.FileName;
 							inputFileName = ofd.FileName;
-							if (inputFileName.EndsWith(".TXT") || inputFileName.EndsWith(".txt"))
+							if (inputFileName.EndsWith(".TXT") || inputFileName.EndsWith(".txt")) //Si es un txt
 							{
 								try
 								{
@@ -51,7 +51,7 @@ namespace compresion_datos_huffman_cs
 									input.Close();
 								}
 							}
-							else if (inputFileName.EndsWith(".huff") || inputFileName.EndsWith(".HUFF"))
+							else if (inputFileName.EndsWith(".huff") || inputFileName.EndsWith(".HUFF")) //Si es un archivo comprimido
 							{
 								try
 								{

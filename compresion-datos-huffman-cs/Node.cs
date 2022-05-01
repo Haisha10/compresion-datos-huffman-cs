@@ -53,13 +53,6 @@ namespace compresion_datos_huffman_cs
             }
         }
 
-
-        public int CompareTo(Node otherNode)
-        {
-            return this.frequency.CompareTo(otherNode.frequency);
-        }
-
-
         public void frequencyIncrease()
         {
             frequency++;
